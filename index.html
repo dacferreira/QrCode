@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html> 
+<head>
+     <meta charset="utf-8" />
+     <title>QRCode Example</title>
+     <label for="mesa">Mesa</label>
+     <input name="mesa" id="mesa" type="text"/>
+     <p>
+      <div id="conteudo">
+          <div id="qrCodeDiv"></div>
+      </div>
+     </p>     
+     <input type="button" value="exibir" id="exibirQrCode"/>
+     <p>
+     <input type="button" value="print" id="printQr" style="display: none"/>
+     </p>
+</head>
+<body>
+  <script src="jquery.min.js"></script>
+  <script type="text/javascript" src="jquery.qrcode.min.js"></script>
+ <script type="text/javascript">
+      'use strict';
+
+      $('#printQr').on('click', function(){
+               var canvas = $('#qrCodeDiv canvas');
+               var dataUrl = canvas.get(0).toDataURL("image/png");
+                var windowContent = '<!DOCTYPE html>';
+                windowContent += '<html>'
+                windowContent += '<head><title>Print canvas</title></head>';
+                windowContent += '<body>'
+                windowContent += '<img src="' + dataUrl + '">';
+                windowContent += '</body>';
+                windowContent += '</html>';
+                var printWin = window.open('','','width=340,height=260');
+                printWin.document.open();
+                printWin.document.write(windowContent);
+                printWin.document.close();
+                printWin.focus();
+                printWin.print();
+                printWin.close();
+      });
+
+      $('#exibirQrCode').on('click', function(){
+              var inputText =  document.getElementById('mesa').value;
+              if(inputText == "") 
+              {
+                alert("preencha o campo Mesa.");
+                return;
+              }
+             $('#qrCodeDiv').qrcode(inputText);
+
+              var canvas = $('#qrCodeDiv canvas');              
+              var img = canvas.get(0).toDataURL("image/png");
+
+              $('#printQr').css("display", "block");
+               $(canvas).on('click', function() {
+                 var dl = document.createElement('a');
+                 dl.setAttribute('href', img);
+                 dl.setAttribute('download', 'qrcode.png');
+                 // Simula o clique no qrcode para baixa uma imagem com nome qrcode.png 
+                 dl.click();
+               });
+      });
+  </script>
+</body>
+</html>
